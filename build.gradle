@@ -2,4 +2,10 @@ apply plugin: 'java'
 
 repositories {
     jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.google.gwt:gwt-user:2.8.0-beta1'
+    testCompile 'junit:junit:4.12'
 }

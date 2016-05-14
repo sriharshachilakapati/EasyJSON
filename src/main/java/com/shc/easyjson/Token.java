@@ -1,18 +1,18 @@
 package com.shc.easyjson;
 
-import static com.shc.easyjson.StringStream.END_OF_INPUT;
+import static com.shc.easyjson.StringStream.*;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class Token
 {
-    private Type   type;
-    private String value;
+    private Type          type;
+    private StringBuilder value;
 
     Token(StringStream source) throws ParseException
     {
-        value = "";
+        value = new StringBuilder();
         extract(source);
     }
 
@@ -34,42 +34,42 @@ public class Token
         else if (currentChar == '{')
         {
             type = Type.OBJECT_BEGIN;
-            value += currentChar;
+            value.append(currentChar);
 
             source.getNextChar();
         }
         else if (currentChar == '}')
         {
             type = Type.OBJECT_END;
-            value += currentChar;
+            value.append(currentChar);
 
             source.getNextChar();
         }
         else if (currentChar == '[')
         {
             type = Type.ARRAY_BEGIN;
-            value += currentChar;
+            value.append(currentChar);
 
             source.getNextChar();
         }
         else if (currentChar == ']')
         {
             type = Type.ARRAY_END;
-            value += currentChar;
+            value.append(currentChar);
 
             source.getNextChar();
         }
         else if (currentChar == ',')
         {
             type = Type.COMMA;
-            value += currentChar;
+            value.append(currentChar);
 
             source.getNextChar();
         }
         else if (currentChar == ':')
         {
             type = Type.COLON;
-            value += currentChar;
+            value.append(currentChar);
 
             source.getNextChar();
         }
@@ -87,14 +87,14 @@ public class Token
                || Character.isDigit(currentChar)
                || currentChar == '_')
         {
-            value += currentChar;
-            source.getNextChar();
+            value.append(currentChar);
+            currentChar = source.getNextChar();
         }
 
-        if (value.equals("true") || value.equals("false"))
+        if (value.toString().equals("true") || value.toString().equals("false"))
             type = Type.BOOLEAN;
 
-        if (value.equals("null"))
+        if (value.toString().equals("null"))
             type = Type.NULL;
     }
 
@@ -115,25 +115,25 @@ public class Token
                 char nextChar = source.peekNextChar();
 
                 if (nextChar == '\\' || nextChar == '"')
-                    value += nextChar;
+                    value.append(nextChar);
 
                 else if (nextChar == 'b')
-                    value += "\b";
+                    value.append("\b");
 
                 else if (nextChar == 'f')
-                    value += "\f";
+                    value.append("\f");
 
                 else if (nextChar == 'n')
-                    value += "\n";
+                    value.append("\n");
 
                 else if (nextChar == 'r')
-                    value += "\r";
+                    value.append("\r");
 
                 else if (nextChar == 's')
-                    value += " ";
+                    value.append(" ");
 
                 else if (nextChar == 't')
-                    value += "\t";
+                    value.append("\t");
 
                 source.getNextChar();
                 source.getNextChar();
@@ -155,12 +155,12 @@ public class Token
                     int unicode = Integer.parseInt(codePoint.trim());
 
                     for (char code : Character.toChars(unicode))
-                        value += code;
+                        value.append(code);
                 }
             }
             else
             {
-                value += currentChar;
+                value.append(currentChar);
                 source.getNextChar();
             }
         }
@@ -184,14 +184,14 @@ public class Token
 
         if (currentChar == '+' || currentChar == '-')
         {
-            value += currentChar;
+            value.append(currentChar);
             source.getNextChar();
             eatWhiteSpace(source);
         }
 
         while (Character.isDigit(currentChar = source.getCurrentChar()))
         {
-            value += currentChar;
+            value.append(currentChar);
             currentChar = source.getNextChar();
 
             if (currentChar == 'e'
@@ -200,13 +200,13 @@ public class Token
                 || currentChar == '+'
                 || currentChar == '-')
             {
-                value += currentChar;
+                value.append(currentChar);
                 source.getNextChar();
                 eatWhiteSpace(source);
             }
         }
 
-        value = "" + Double.parseDouble(value);
+        value.replace(0, value.length(), "" + Double.parseDouble(value.toString()));
     }
 
     public Type getType()
@@ -216,7 +216,7 @@ public class Token
 
     public String getValue()
     {
-        return value;
+        return value.toString();
     }
 
     public enum Type

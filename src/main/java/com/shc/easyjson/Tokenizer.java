@@ -13,7 +13,7 @@ public class Tokenizer
         this.source = new StringStream(source);
     }
 
-    Token getCurrentToken()
+    public Token getCurrentToken()
     {
         return currentToken;
     }
@@ -23,7 +23,7 @@ public class Tokenizer
         return currentToken = new Token(source);
     }
 
-    public StringStream getSourceStream()
+    StringStream getSourceStream()
     {
         return source;
     }

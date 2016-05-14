@@ -4,7 +4,7 @@ class StringStream
 {
     static final char END_OF_INPUT = (char) 0;
 
-    private String string;
+    private char[] string;
 
     private int lineNumber;
     private int charColumn;
@@ -12,7 +12,7 @@ class StringStream
 
     StringStream(String string)
     {
-        this.string = string;
+        this.string = string.toCharArray();
 
         lineNumber = 0;
         charColumn = 0;
@@ -34,10 +34,10 @@ class StringStream
         charIndex++;
         charColumn++;
 
-        if (charIndex == string.length())
+        if (charIndex == string.length)
             return END_OF_INPUT;
 
-        char ch = string.charAt(charIndex);
+        char ch = string[charIndex];
 
         if (ch == '\n')
         {
@@ -50,17 +50,17 @@ class StringStream
 
     char getCurrentChar()
     {
-        if (charIndex == string.length())
+        if (charIndex == string.length)
             return END_OF_INPUT;
 
-        return string.charAt(charIndex);
+        return string[charIndex];
     }
 
     char peekNextChar()
     {
-        if (charIndex + 1 >= string.length())
+        if (charIndex + 1 >= string.length)
             return END_OF_INPUT;
 
-        return string.charAt(charIndex + 1);
+        return string[charIndex + 1];
     }
 }

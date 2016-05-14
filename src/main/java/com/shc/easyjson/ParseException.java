@@ -5,12 +5,12 @@ package com.shc.easyjson;
  */
 public class ParseException extends Exception
 {
-    public ParseException(StringStream source, String description)
+    ParseException(StringStream source, String description)
     {
         super("Error at line " + source.getLineNumber() + " column " + source.getCharColumn() + ": " + description);
     }
 
-    public ParseException()
+    ParseException()
     {
         this(null, "Error");
     }
