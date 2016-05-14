@@ -10,8 +10,13 @@ public class ParseException extends Exception
         super("Error at line " + source.getLineNumber() + " column " + source.getCharColumn() + ": " + description);
     }
 
-    ParseException()
+    ParseException(Tokenizer tokenizer, String description)
     {
-        this(null, "Error");
+        this(tokenizer.getSourceStream(), description + " Got " + tokenizer.getCurrentToken().getType());
+    }
+
+    @SuppressWarnings("unused")
+    private ParseException()
+    {
     }
 }

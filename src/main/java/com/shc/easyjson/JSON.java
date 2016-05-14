@@ -24,14 +24,16 @@ public final class JSON
         Token token = tokenizer.getCurrentToken();
 
         if (token.getType() != Token.Type.OBJECT_BEGIN)
-            throw new ParseException(tokenizer.getSourceStream(), "Object notation must start with '{' symbol");
+            throw new ParseException(tokenizer, "Object notation must start with '{' symbol.");
 
         tokenizer.getNextToken();
 
         parseProperties(object, tokenizer);
 
-        if (tokenizer.getCurrentToken().getType() == Token.Type.OBJECT_END)
-            tokenizer.getNextToken();
+        if (tokenizer.getCurrentToken().getType() != Token.Type.OBJECT_END)
+            throw new ParseException(tokenizer, "Expected '}' token to end the object.");
+
+        tokenizer.getNextToken();
 
         return object;
     }
@@ -41,46 +43,13 @@ public final class JSON
         Token keyToken = tokenizer.getCurrentToken();
 
         if (keyToken.getType() != Token.Type.STRING)
-            throw new ParseException(tokenizer.getSourceStream(), "Expected STRING keys.");
+            throw new ParseException(tokenizer, "Expected STRING keys.");
 
         if (tokenizer.getNextToken().getType() != Token.Type.COLON)
-            throw new ParseException(tokenizer.getSourceStream(), "Expected COLON (:) symbol after property key.");
+            throw new ParseException(tokenizer, "Expected COLON (:) symbol after property key.");
 
-        Token valueToken = tokenizer.getNextToken();
-
-        switch (valueToken.getType())
-        {
-            case STRING:
-                jsonObject.put(keyToken.getValue(), new JSONValue(valueToken.getValue()));
-                tokenizer.getNextToken();
-                break;
-
-            case NUMBER:
-                jsonObject.put(keyToken.getValue(), new JSONValue(Double.parseDouble(valueToken.getValue())));
-                tokenizer.getNextToken();
-                break;
-
-            case BOOLEAN:
-                jsonObject.put(keyToken.getValue(), new JSONValue(Boolean.parseBoolean(valueToken.getValue())));
-                tokenizer.getNextToken();
-                break;
-
-            case NULL:
-                jsonObject.put(keyToken.getValue(), new JSONValue((Object) null));
-                tokenizer.getNextToken();
-                break;
-
-            case ARRAY_BEGIN:
-                jsonObject.put(keyToken.getValue(), new JSONValue(parseArray(tokenizer)));
-                break;
-
-            case OBJECT_BEGIN:
-                jsonObject.put(keyToken.getValue(), new JSONValue(parseObject(tokenizer)));
-                break;
-
-            default:
-                throw new ParseException(tokenizer.getSourceStream(), "Expected a value token.");
-        }
+        tokenizer.getNextToken();
+        jsonObject.put(keyToken.getValue(), parseValue(tokenizer));
 
         if (tokenizer.getCurrentToken().getType() == Token.Type.COMMA)
         {
@@ -96,46 +65,13 @@ public final class JSON
         Token currentToken = tokenizer.getCurrentToken();
 
         if (currentToken.getType() != Token.Type.ARRAY_BEGIN)
-            throw new ParseException(tokenizer.getSourceStream(), "Expected '[' token.");
+            throw new ParseException(tokenizer, "Expected '[' token.");
 
         currentToken = tokenizer.getNextToken();
 
         while (currentToken.getType() != Token.Type.ARRAY_END)
         {
-            switch (currentToken.getType())
-            {
-                case STRING:
-                    array.add(new JSONValue(currentToken.getValue()));
-                    tokenizer.getNextToken();
-                    break;
-
-                case NUMBER:
-                    array.add(new JSONValue(Double.parseDouble(currentToken.getValue())));
-                    tokenizer.getNextToken();
-                    break;
-
-                case BOOLEAN:
-                    array.add(new JSONValue(Boolean.parseBoolean(currentToken.getValue())));
-                    tokenizer.getNextToken();
-                    break;
-
-                case NULL:
-                    array.add(new JSONValue((Object) null));
-                    tokenizer.getNextToken();
-                    break;
-
-                case ARRAY_BEGIN:
-                    array.add(new JSONValue(parseArray(tokenizer)));
-                    break;
-
-                case OBJECT_BEGIN:
-                    array.add(new JSONValue(parseObject(tokenizer)));
-                    break;
-
-                default:
-                    throw new ParseException(tokenizer.getSourceStream(), "Expected a value token. Got " + currentToken.getType());
-            }
-
+            array.add(parseValue(tokenizer));
             currentToken = tokenizer.getCurrentToken();
 
             if (currentToken.getType() == Token.Type.COMMA)
@@ -153,14 +89,49 @@ public final class JSON
                         break;
 
                     default:
-                        throw new ParseException(tokenizer.getSourceStream(), "Expected a value token after comma.");
+                        throw new ParseException(tokenizer, "Expected a value token after comma.");
                 }
             }
+            else if (currentToken.getType() != Token.Type.ARRAY_END)
+                throw new ParseException(tokenizer, "Expected a comma after value.");
         }
 
         // Consume the array end token
         tokenizer.getNextToken();
 
         return array;
+    }
+
+    private static JSONValue parseValue(Tokenizer tokenizer) throws ParseException
+    {
+        Token currentToken = tokenizer.getCurrentToken();
+
+        switch (currentToken.getType())
+        {
+            case STRING:
+                tokenizer.getNextToken();
+                return new JSONValue(currentToken.getValue());
+
+            case NUMBER:
+                tokenizer.getNextToken();
+                return new JSONValue(Double.parseDouble(currentToken.getValue()));
+
+            case BOOLEAN:
+                tokenizer.getNextToken();
+                return new JSONValue(Boolean.parseBoolean(currentToken.getValue()));
+
+            case NULL:
+                tokenizer.getNextToken();
+                return new JSONValue((Object) null);
+
+            case ARRAY_BEGIN:
+                return new JSONValue(parseArray(tokenizer));
+
+            case OBJECT_BEGIN:
+                return new JSONValue(parseObject(tokenizer));
+
+            default:
+                throw new ParseException(tokenizer, "Expected a value token.");
+        }
     }
 }
