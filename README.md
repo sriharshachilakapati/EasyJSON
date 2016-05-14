@@ -75,7 +75,53 @@ for (JSONValue item : people)
 }
 ~~~
 
-This is how you will be reading values from the JSON string. The generic return types make this easy to use. If you have any doubts regarding this, drop me an e-mail at [hello@goharsha.com](mailto://hello@goharsha.com).
+This is how you will be reading values from the JSON string. The generic return types make this easy to use.
+
+## Writing JSON
+
+Not only reading, but EasyJSON can also create JSON strings from code. This is how you can create JSON.
+
+~~~java
+JSONObject root = new JSONObject();
+root.put("test1", new JSONValue("Hello World"));
+root.put("test2", new JSONValue(3));
+
+JSONArray array = new JSONArray();
+
+for (int i = 0; i < 2; i++)
+{
+    JSONObject obj = new JSONObject();
+    obj.put("test3", new JSONValue(true));
+    obj.put("test4", new JSONValue());
+
+    array.add(new JSONValue(obj));
+}
+
+root.put("test5", new JSONValue(array));
+
+System.out.println(JSON.write(root));
+~~~
+
+And it gives you the following result.
+
+~~~json
+{
+    "test5": [
+            {
+                "test4": null,
+                "test3": true
+            },
+            {
+                "test4": null,
+                "test3": true
+            }
+        ],
+    "test2": 3.0,
+    "test1": "Hello World"
+}
+~~~
+
+If you have any doubts regarding this, drop me an e-mail at [hello@goharsha.com](mailto://hello@goharsha.com).
 
 ## License
 

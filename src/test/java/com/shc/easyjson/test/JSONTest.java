@@ -3,7 +3,9 @@ package com.shc.easyjson.test;
 import com.shc.easyjson.JSON;
 import com.shc.easyjson.JSONArray;
 import com.shc.easyjson.JSONObject;
+import com.shc.easyjson.JSONValue;
 import com.shc.easyjson.ParseException;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -17,6 +19,29 @@ import static org.junit.Assert.*;
  */
 public class JSONTest
 {
+    @BeforeClass
+    public static void beforeAll()
+    {
+        JSONObject root = new JSONObject();
+        root.put("test1", new JSONValue("Hello World"));
+        root.put("test2", new JSONValue(3));
+
+        JSONArray array = new JSONArray();
+
+        for (int i = 0; i < 2; i++)
+        {
+            JSONObject obj = new JSONObject();
+            obj.put("test3", new JSONValue(true));
+            obj.put("test4", new JSONValue());
+
+            array.add(new JSONValue(obj));
+        }
+
+        root.put("test5", new JSONValue(array));
+
+        System.out.println(JSON.write(root));
+    }
+
     @Test(expected = ParseException.class)
     public void testParseError1() throws ParseException
     {

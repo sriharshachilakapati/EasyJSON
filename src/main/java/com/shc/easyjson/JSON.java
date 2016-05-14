@@ -122,7 +122,7 @@ public final class JSON
 
             case NULL:
                 tokenizer.getNextToken();
-                return new JSONValue((Object) null);
+                return new JSONValue();
 
             case ARRAY_BEGIN:
                 return new JSONValue(parseArray(tokenizer));
@@ -132,6 +132,117 @@ public final class JSON
 
             default:
                 throw new ParseException(tokenizer, "Expected a value token.");
+        }
+    }
+
+    public static String write(JSONObject json)
+    {
+        StringBuilder sb = new StringBuilder();
+        writeObject(sb, 0, json);
+        return sb.toString();
+    }
+
+    private static void newLine(StringBuilder builder, int indentation)
+    {
+        builder.append("\n");
+
+        for (int i = 0; i < indentation; i++)
+            builder.append("    ");
+    }
+
+    private static void writeObject(StringBuilder sb, int indentation, JSONObject object)
+    {
+        sb.append("{");
+        newLine(sb, ++indentation);
+
+        int i = 0;
+
+        for (String key : object.keySet())
+        {
+            writeString(sb, key);
+            sb.append(": ");
+
+            writeValue(sb, indentation, object.get(key));
+
+            if (i != object.size() - 1)
+            {
+                sb.append(",");
+                newLine(sb, indentation);
+            }
+
+            i++;
+        }
+
+        newLine(sb, --indentation);
+        sb.append("}");
+    }
+
+    private static void writeArray(StringBuilder sb, int indentation, JSONArray array)
+    {
+        sb.append("[");
+        newLine(sb, indentation + 1);
+
+        int i = 0;
+
+        for (JSONValue value : array)
+        {
+            writeValue(sb, indentation, value);
+
+            if (i != array.size() - 1)
+            {
+                sb.append(",");
+                newLine(sb, indentation + 1);
+            }
+
+            i++;
+        }
+
+        newLine(sb, indentation);
+        sb.append("]");
+    }
+
+    private static void writeString(StringBuilder sb, String string)
+    {
+        sb.append("\"");
+
+        sb.append(string.replaceAll("\b", "\\b")
+                .replaceAll("\\f", "\\f")
+                .replaceAll("\\n", "\\n")
+                .replaceAll("\\\\", "\\\\")
+                .replaceAll("\\r", "\\r")
+                .replaceAll("\\t", "\\t")
+                .replaceAll("\"", "\\\""));
+
+        sb.append("\"");
+    }
+
+    private static void writeValue(StringBuilder sb, int indentation, JSONValue value)
+    {
+        switch (value.getType())
+        {
+            case STRING:
+                writeString(sb, value.getValue());
+                break;
+
+            case NUMBER:
+                sb.append(((double) value.getValue()));
+                break;
+
+            case NULL:
+                sb.append("null");
+                break;
+
+            case OBJECT:
+                writeObject(sb, indentation + 1, value.getValue());
+                break;
+
+            case ARRAY:
+                writeArray(sb, indentation + 1, value.getValue());
+                break;
+
+            case BOOLEAN:
+                sb.append(value.getValue() ? "true" : "false");
+                break;
         }
     }
 }

@@ -10,38 +10,32 @@ public class JSONValue
 
     public JSONValue(double value)
     {
-        this.value = value;
-        type = Type.NUMBER;
+        set(value);
     }
 
     public JSONValue(String value)
     {
-        this.value = value;
-        type = Type.STRING;
+        set(value);
     }
 
     public JSONValue(boolean value)
     {
-        this.value = value;
-        type = Type.BOOLEAN;
+        set(value);
     }
 
     public JSONValue(JSONObject value)
     {
-        this.value = value;
-        type = Type.OBJECT;
+        set(value);
     }
 
     public JSONValue(JSONArray value)
     {
-        this.value = value;
-        type = Type.ARRAY;
+        set(value);
     }
 
-    public JSONValue(Object value)
+    public JSONValue()
     {
-        this.value = value;
-        type = Type.UNKNOWN;
+        set();
     }
 
     @SuppressWarnings("unchecked")
@@ -55,6 +49,48 @@ public class JSONValue
         return type;
     }
 
+    public JSONValue set(double value)
+    {
+        this.value = value;
+        type = Type.NUMBER;
+        return this;
+    }
+
+    public JSONValue set(String value)
+    {
+        this.value = value;
+        type = Type.STRING;
+        return this;
+    }
+
+    public JSONValue set(boolean value)
+    {
+        this.value = value;
+        type = Type.BOOLEAN;
+        return this;
+    }
+
+    public JSONValue set(JSONObject value)
+    {
+        this.value = value;
+        type = Type.OBJECT;
+        return this;
+    }
+
+    public JSONValue set(JSONArray value)
+    {
+        this.value = value;
+        type = Type.ARRAY;
+        return this;
+    }
+
+    public JSONValue set()
+    {
+        this.value = null;
+        type = Type.NULL;
+        return this;
+    }
+
     public enum Type
     {
         NUMBER,
@@ -62,6 +98,6 @@ public class JSONValue
         BOOLEAN,
         ARRAY,
         OBJECT,
-        UNKNOWN
+        NULL
     }
 }
