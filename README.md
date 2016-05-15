@@ -2,6 +2,45 @@
 
 An easy to use JSON library which has a common API which supports both standard Java and also GWT. No JSNI is being used. All the parsing will be done through Java code. GWT users are required to use a GWT specific artifact, named `EasyJSON-gwt.jar`
 
+EasyJSON requires Java 8, and GWT 2.8 to work. Installing it is as easy as adding the following dependency in Maven.
+
+~~~xml
+<!-- For normal Java projects -->
+<dependency>
+    <groupId>com.goharsha</groupId>
+    <artifactId>easyjson</artifactId>
+    <version>0.1</version>
+    <scope>compile</scope>
+</dependency>
+
+<!-- For GWT projects -->
+<dependency>
+    <groupId>com.goharsha</groupId>
+    <artifactId>easyjson</artifactId>
+    <classifier>gwt</classifier>
+    <version>0.1</version>
+    <scope>compile</scope>
+</dependency>
+~~~
+
+And if you are using Gradle as your build system, use the following command to add the dependency.
+
+~~~groovy
+// For normal Java projects
+compile 'com.goharsha:easyjson:0.1'
+
+// For GWT projects
+compile 'com.goharsha:easyjson:0.1:gwt'
+~~~
+
+For use with GWT, you also inherit this library in the GWT module file like this.
+
+~~~xml
+<inherits name='com.shc.EasyJSON'/>
+~~~
+
+And you are done. If there are any issues, please report them, and I'll fix it as soon as I can.
+
 ## Parsing JSON
 
 The library does not deal with the files, as it has to be compatible with GWT. You are required to read the file yourself into a string, and pass it to the library to parse.
