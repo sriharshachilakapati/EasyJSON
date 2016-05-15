@@ -5,7 +5,6 @@ import com.shc.easyjson.JSONArray;
 import com.shc.easyjson.JSONObject;
 import com.shc.easyjson.JSONValue;
 import com.shc.easyjson.ParseException;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -19,9 +18,24 @@ import static org.junit.Assert.*;
  */
 public class JSONTest
 {
-    @BeforeClass
-    public static void beforeAll()
+    @Test
+    public void testWrite()
     {
+        String expected = "{\n"
+                          + "    \"test5\": [\n"
+                          + "            {\n"
+                          + "                \"test4\": null,\n"
+                          + "                \"test3\": true\n"
+                          + "            },\n"
+                          + "            {\n"
+                          + "                \"test4\": null,\n"
+                          + "                \"test3\": true\n"
+                          + "            }\n"
+                          + "        ],\n"
+                          + "    \"test2\": 3.0,\n"
+                          + "    \"test1\": \"Hello World\"\n"
+                          + "}";
+
         JSONObject root = new JSONObject();
         root.put("test1", new JSONValue("Hello World"));
         root.put("test2", new JSONValue(3));
@@ -39,7 +53,7 @@ public class JSONTest
 
         root.put("test5", new JSONValue(array));
 
-        System.out.println(JSON.write(root));
+        assertEquals(expected, JSON.write(root));
     }
 
     @Test(expected = ParseException.class)
