@@ -9,7 +9,7 @@ EasyJSON requires Java 8, and GWT 2.8 to work. Installing it is as easy as addin
 <dependency>
     <groupId>com.goharsha</groupId>
     <artifactId>easyjson</artifactId>
-    <version>0.2</version>
+    <version>0.3</version>
     <scope>compile</scope>
 </dependency>
 
@@ -18,7 +18,7 @@ EasyJSON requires Java 8, and GWT 2.8 to work. Installing it is as easy as addin
     <groupId>com.goharsha</groupId>
     <artifactId>easyjson</artifactId>
     <classifier>gwt</classifier>
-    <version>0.2</version>
+    <version>0.3</version>
     <scope>compile</scope>
 </dependency>
 ~~~
@@ -27,10 +27,10 @@ And if you are using Gradle as your build system, use the following command to a
 
 ~~~groovy
 // For normal Java projects
-compile 'com.goharsha:easyjson:0.2'
+compile 'com.goharsha:easyjson:0.3'
 
 // For GWT projects
-compile 'com.goharsha:easyjson:0.2:gwt'
+compile 'com.goharsha:easyjson:0.3:gwt'
 ~~~
 
 For use with GWT, you also inherit this library in the GWT module file like this.

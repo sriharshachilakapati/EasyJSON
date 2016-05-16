@@ -251,7 +251,8 @@ public final class JSON
                 break;
 
             case BOOLEAN:
-                sb.append(value.getValue() ? "true" : "false");
+                boolean condition = value.getValue();
+                sb.append(condition ? "true" : "false");
                 break;
         }
     }
