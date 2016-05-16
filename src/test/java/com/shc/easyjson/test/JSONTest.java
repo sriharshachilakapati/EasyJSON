@@ -22,18 +22,18 @@ public class JSONTest
     public void testWrite()
     {
         String expected = "{\n"
+                          + "    \"test1\": \"Hello World\",\n"
+                          + "    \"test2\": 3,\n"
                           + "    \"test5\": [\n"
                           + "            {\n"
-                          + "                \"test4\": null,\n"
-                          + "                \"test3\": true\n"
+                          + "                \"test3\": true,\n"
+                          + "                \"test4\": null\n"
                           + "            },\n"
                           + "            {\n"
-                          + "                \"test4\": null,\n"
-                          + "                \"test3\": true\n"
+                          + "                \"test3\": true,\n"
+                          + "                \"test4\": null\n"
                           + "            }\n"
-                          + "        ],\n"
-                          + "    \"test2\": 3.0,\n"
-                          + "    \"test1\": \"Hello World\"\n"
+                          + "        ]\n"
                           + "}";
 
         JSONObject root = new JSONObject();

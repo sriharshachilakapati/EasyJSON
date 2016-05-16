@@ -1,5 +1,9 @@
 package com.shc.easyjson;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author Sri Harsha Chilakapati
  */
@@ -155,16 +159,21 @@ public final class JSON
         sb.append("{");
         newLine(sb, ++indentation);
 
+        // Sort the keys in ascending order
+        List<String> keyList = new ArrayList<>();
+        keyList.addAll(object.keySet());
+        Collections.sort(keyList, String::compareTo);
+
         int i = 0;
 
-        for (String key : object.keySet())
+        for (String key : keyList)
         {
             writeString(sb, key);
             sb.append(": ");
 
             writeValue(sb, indentation, object.get(key));
 
-            if (i != object.size() - 1)
+            if (i != keyList.size() - 1)
             {
                 sb.append(",");
                 newLine(sb, indentation);
@@ -225,7 +234,8 @@ public final class JSON
                 break;
 
             case NUMBER:
-                sb.append(((double) value.getValue()));
+                double num = value.getValue();
+                sb.append((num == ((long) num)) ? "" + ((long) num) : num);
                 break;
 
             case NULL:
